@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance Tracker</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+        }
+        
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .sidebar-header h3 {
+            margin-left: 10px;
+            font-weight: 600;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu li:hover {
+            background-color: var(--secondary);
+        }
+        
+        .sidebar-menu li a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-menu li a span {
+            margin-left: 10px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .welcome {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover .card-header {
+            transform: scale(1.02);
+        }
+        
+        .card-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover .card-icon {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .attendance-chart {
+            height: 150px;
+            margin-top: 15px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding-bottom: 25px;
+            position: relative;
+        }
+        
+        .attendance-chart-bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .attendance-chart-fill {
+            width: 30px;
+            background-color: var(--primary);
+            border-radius: 5px 5px 0 0;
+            transition: height 0.3s ease;
+        }
+        
+        .attendance-chart-label {
+            font-size: 12px;
+            color: var(--gray);
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+        
+        .today-classes {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .today-classes:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .today-classes .card-header {
+            transition: all 0.3s ease;
+        }
+        
+        .today-classes:hover .card-header {
+            transform: scale(1.02);
+        }
+        
+        .today-classes .card-header button {
+            transition: all 0.3s ease;
+        }
+        
+        .today-classes:hover .card-header button {
+            background-color: var(--secondary);
+        }
+        
+        .class-list {
+            margin-top: 15px;
+        }
+        
+        .class-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+        
+        .class-item:last-child {
+            border-bottom: none;
+        }
+        
+        .class-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+        
+        .class-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .class-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        
+        .class-name {
+            font-weight: 500;
+        }
+        
+        .class-time {
+            color: var(--gray);
+            font-size: 14px;
+            margin-left: 5px;
+        }
+        
+        .class-actions button {
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-present {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-absent {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-present:hover {
+            background-color: #3aa76d;
+            transform: scale(1.05);
+        }
+        
+        .btn-absent:hover {
+            background-color: #d61b5e;
+            transform: scale(1.05);
+        }
+        
+        .subjects-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .subject-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .subject-card:hover .subject-header {
+            transform: scale(1.02);
+        }
+        
+        .subject-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .subject-percentage {
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .subject-card:hover .progress-bar {
+            transform: scale(1.02);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+        }
+        
+        .attendance-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .subject-card:hover .attendance-stats {
+            transform: scale(1.02);
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+        }
+        
+        .add-class {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: var(--light);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <span>📚</span>
+                <h3>Smart Attendance</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="dashboard.html">
+                        <span>📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="timetable.html">
+                        <span>📅</span>
+                        <span>Timetable</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="attendance.html">
+                        <span>✅</span>
+                        <span>Attendance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="extra-classes.html">
+                        <span>➕</span>
+                        <span>Extra Classes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="analytics.html">
+                        <span>📈</span>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="export.html">
+                        <span>☁️</span>
+                        <span>Export</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="profile.html">
+                        <span>👤</span>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="settings.html">
+                        <span>⚙️</span>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <button onclick="logout()" style="background:none;border:none;color:white;display:flex;align-items:center;padding:10px;cursor:pointer;">
+                        <span>🚪</span>
+                        <span style="margin-left:10px;">Logout</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <div class="welcome">
+                    <h2 id="welcomeMessage">Welcome back!</h2>
+                    <p id="currentDate"></p>
+                </div>
+                <div class="profile">
+                    <img src="/api/placeholder/40/40" alt="Profile">
+                    <span id="userName"></span>
+                </div>
+            </div>
+            
+            <div class="cards">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Overall Attendance</h3>
+                        <div class="card-icon">📊</div>
+                    </div>
+                    <div class="card-content">
+                        <h4 style="font-size: 2em; color: var(--primary);">85.7%</h4>
+                        <p style="color: var(--gray);">Current Semester</p>
+                        <div class="attendance-chart">
+                            <div class="attendance-chart-bar">
+                                <div class="attendance-chart-fill" style="height: 80px;"></div>
+                                <div class="attendance-chart-label">Feb</div>
+                            </div>
+                            <div class="attendance-chart-bar">
+                                <div class="attendance-chart-fill" style="height: 100px;"></div>
+                                <div class="attendance-chart-label">Mar</div>
+                            </div>
+                            <div class="attendance-chart-bar">
+                                <div class="attendance-chart-fill" style="height: 70px;"></div>
+                                <div class="attendance-chart-label">Apr</div>
+                            </div>
+                            <div class="attendance-chart-bar">
+                                <div class="attendance-chart-fill" style="height: 90px;"></div>
+                                <div class="attendance-chart-label">May</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Today's Overview</h3>
+                        <div class="card-icon">📅</div>
+                    </div>
+                    <div class="card-content">
+                        <div style="display: flex; justify-content: space-around; margin-top: 15px;">
+                            <div style="text-align: center;">
+                                <h4 style="font-size: 2em; color: var(--primary);">4</h4>
+                                <p style="color: var(--gray);">Total Classes</p>
+                            </div>
+                            <div style="text-align: center;">
+                                <h4 style="font-size: 2em; color: var(--success);">2</h4>
+                                <p style="color: var(--gray);">Attended</p>
+                            </div>
+                            <div style="text-align: center;">
+                                <h4 style="font-size: 2em; color: var(--warning);">2</h4>
+                                <p style="color: var(--gray);">Remaining</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Today's Progress</span>
+                                <span>50%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 50%; background-color: var(--primary);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Attendance Alert</h3>
+                        <div class="card-icon" style="background-color: #fee2e2;">⚠️</div>
+                    </div>
+                    <div class="card-content">
+                        <div style="background-color: #fee2e2; padding: 15px; border-radius: 5px; margin-top: 10px;">
+                            <h4 style="color: var(--danger); margin-bottom: 10px;">Low Attendance Warning</h4>
+                            <p style="color: var(--gray);">Your attendance in <strong>Database Systems</strong> is below 75% (currently at 68%). You need to attend at least 3 more classes to reach the minimum requirement.</p>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <button style="width: 100%; padding: 10px; background-color: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer;">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="today-classes">
+                <div class="card-header">
+                    <h3 class="card-title">Today's Classes</h3>
+                    <button style="padding: 8px 15px; background-color: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center;">
+                        <span style="margin-right: 5px;">➕</span> Add Extra Class
+                    </button>
+                </div>
+                <div class="class-list">
+                    <div class="class-item">
+                        <div class="class-info">
+                            <div class="class-color" style="background-color: var(--primary);"></div>
+                            <div>
+                                <div class="class-name">Data Structures</div>
+                                <div class="class-time">9:00 AM - 10:00 AM • Room 302</div>
+                            </div>
+                        </div>
+                        <div class="class-actions">
+                            <span style="color: var(--success); font-weight: 500;">✓ Attended</span>
+                        </div>
+                    </div>
+                    <div class="class-item">
+                        <div class="class-info">
+                            <div class="class-color" style="background-color: var(--success);"></div>
+                            <div>
+                                <div class="class-name">Computer Networks</div>
+                                <div class="class-time">10:15 AM - 11:15 AM • Room 405</div>
+                            </div>
+                        </div>
+                        <div class="class-actions">
+                            <span style="color: var(--success); font-weight: 500;">✓ Attended</span>
+                        </div>
+                    </div>
+                    <div class="class-item">
+                        <div class="class-info">
+                            <div class="class-color" style="background-color: var(--warning);"></div>
+                            <div>
+                                <div class="class-name">Database Systems</div>
+                                <div class="class-time">1:00 PM - 2:00 PM • Room 103</div>
+                            </div>
+                        </div>
+                        <div class="class-actions">
+                            <button class="btn-present">Present</button>
+                            <button class="btn-absent">Absent</button>
+                        </div>
+                    </div>
+                    <div class="class-item">
+                        <div class="class-info">
+                            <div class="class-color" style="background-color: var(--danger);"></div>
+                            <div>
+                                <div class="class-name">Software Engineering</div>
+                                <div class="class-time">3:30 PM - 4:30 PM • Room 201</div>
+                            </div>
+                        </div>
+                        <div class="class-actions">
+                            <button class="btn-present">Present</button>
+                            <button class="btn-absent">Absent</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 style="margin-bottom: 15px;">Subject-wise Attendance</h3>
+            <div class="subjects-section">
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <h4 class="subject-title">Data Structures</h4>
+                        <span class="subject-percentage" style="color: var(--success);">92%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 92%; background-color: var(--success);"></div>
+                    </div>
+                    <div class="attendance-stats">
+                        <div class="stat">
+                            <div class="stat-value">23</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">21</div>
+                            <div class="stat-label">Present</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">2</div>
+                            <div class="stat-label">Absent</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <h4 class="subject-title">Computer Networks</h4>
+                        <span class="subject-percentage" style="color: var(--success);">86%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 86%; background-color: var(--success);"></div>
+                    </div>
+                    <div class="attendance-stats">
+                        <div class="stat">
+                            <div class="stat-value">21</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">18</div>
+                            <div class="stat-label">Present</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Absent</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <h4 class="subject-title">Database Systems</h4>
+                        <span class="subject-percentage" style="color: var(--danger);">68%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 68%; background-color: var(--danger);"></div>
+                    </div>
+                    <div class="attendance-stats">
+                        <div class="stat">
+                            <div class="stat-value">25</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">17</div>
+                            <div class="stat-label">Present</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">8</div>
+                            <div class="stat-label">Absent</div>
+                        </div>
+                    </div>
+                   
+                </div>
+                <div class="subject-card">
+                    <div class="subject-header">
+                        <h4 class="subject-title">Software Engineering</h4>
+                        <span class="subject-percentage" style="color: var(--warning);">76%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 76%; background-color: var(--warning);"></div>
+                    </div>
+                    <div class="attendance-stats">
+                        <div class="stat">
+                            <div class="stat-value">25</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">19</div>
+                            <div class="stat-label">Present</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">6</div>
+                            <div class="stat-label">Absent</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Logout function -->
+    <script>
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html'; // Redirect to login page
+        }
+
+        // Format date to show day, month, and year
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        // Get month name from date
+        function getMonthName(date) {
+            return date.toLocaleString('default', { month: 'short' });
+        }
+
+        // Get last 4 months including current month
+        function getLastFourMonths() {
+            const months = [];
+            const currentDate = new Date();
+            
+            for (let i = 3; i >= 0; i--) {
+                const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+                months.push({
+                    name: getMonthName(date),
+                    height: Math.floor(Math.random() * 30) + 70 // Random height between 70-100 for demo
+                });
+            }
+            
+            return months;
+        }
+
+        // Update attendance chart with dynamic months
+        function updateAttendanceChart() {
+            const months = getLastFourMonths();
+            const chartContainer = document.querySelector('.attendance-chart');
+            chartContainer.innerHTML = '';
+            
+            months.forEach(month => {
+                const barContainer = document.createElement('div');
+                barContainer.className = 'attendance-chart-bar';
+                
+                const bar = document.createElement('div');
+                bar.className = 'attendance-chart-fill';
+                bar.style.height = `${month.height}px`;
+                
+                const label = document.createElement('div');
+                label.className = 'attendance-chart-label';
+                label.textContent = month.name;
+                
+                barContainer.appendChild(bar);
+                barContainer.appendChild(label);
+                chartContainer.appendChild(barContainer);
+            });
+        }
+
+        // Set user name from localStorage and current date
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                document.getElementById('welcomeMessage').textContent = `Welcome back, ${user.name}!`;
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('currentDate').textContent = formatDate(new Date());
+                updateAttendanceChart(); // Initialize the chart
+            } else {
+                window.location.href = 'index.html'; // Redirect to login if no user data
+            }
+        });
+    </script>
+</body>
+</html>

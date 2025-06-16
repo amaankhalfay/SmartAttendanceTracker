@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Information System | Smart Attendance Tracker</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #c7eafd, #d4f1f9);
+      background-image: url('./public/components/freepik__upload__21322.png');
+      background-size: cover;
+      background-position: center;
+      background-blend-mode: overlay;
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.7);
+      z-index: -1;
+    }
+    .form-container {
+      background: #ffffff;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      transition: all 0.3s ease;
+    }
+    .form-title {
+      color: #1e293b;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+    .form-section-title {
+      color: #334155;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .form-group {
+      transition: all 0.2s ease;
+    }
+    input, select, textarea {
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .submit-btn {
+      background: #2563eb;
+      transition: all 0.2s ease;
+    }
+    .submit-btn:hover {
+      background: #1d4ed8;
+    }
+    .form-divider {
+      border: none;
+      height: 1px;
+      background: #e2e8f0;
+      margin: 1.5rem 0;
+    }
+    .required-field::after {
+      content: "*";
+      color: #ef4444;
+      margin-left: 0.25rem;
+    }
+    .info-text {
+      color: #64748b;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container w-full max-w-3xl p-8">
+    <h2 class="text-2xl text-center mb-8 form-title">Student Information System</h2>
+
+    <form id="collegeInfoForm" class="space-y-8">
+      <!-- Academic Information Section -->
+      <div>
+        <h3 class="form-section-title">Academic Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="form-group">
+            <label class="block mb-2 font-medium text-gray-700 required-field">College Name</label>
+            <input type="text" id="collegeName" placeholder="Enter College Name"
+              class="w-full px-4 py-2.5 rounded-lg focus:outline-none" required>
+          </div>
+
+          <div class="form-group">
+            <label class="block mb-2 font-medium text-gray-700 required-field">College Email ID</label>
+            <input type="email" id="collegeEmail" placeholder="Enter College Email ID"
+              class="w-full px-4 py-2.5 rounded-lg focus:outline-none" required>
+          </div>
+
+          <div class="form-group">
+            <label class="block mb-2 font-medium text-gray-700 required-field">Department/Branch</label>
+            <select id="department" class="w-full px-4 py-2.5 rounded-lg focus:outline-none" required>
+              <option value="" disabled selected>Select Department</option>
+              <option value="CSE">Computer Science & Engineering</option>
+              <option value="CE">Computer Engineering</option>
+              <option value="IT">Information Technology</option>
+              <option value="ME">Mechanical Engineering</option>
+              <option value="EE">Electrical Engineering</option>
+              <option value="ECE">Electronics & Communication</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="block mb-2 font-medium text-gray-700 required-field">Section</label>
+            <select id="section" class="w-full px-4 py-2.5 rounded-lg focus:outline-none" required>
+              <option value="" disabled selected>Select Section</option>
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+              <option value="C">Section C</option>
+              <option value="D">Section D</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="block mb-2 font-medium text-gray-700 required-field">Semester</label>
+            <select id="semester" class="w-full px-4 py-2.5 rounded-lg focus:outline-none" required>
+              <option value="" disabled selected>Select Semester</option>
+              <option value="1">Semester 1</option>
+              <option value="2">Semester 2</option>
+              <option value="3">Semester 3</option>
+              <option value="4">Semester 4</option>
+              <option value="5">Semester 5</option>
+              <option value="6">Semester 6</option>
+              <option value="7">Semester 7</option>
+              <option value="8">Semester 8</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="block mb-2 font-medium text-gray-700 required-field">Year</label>
+            <select id="year" class="w-full px-4 py-2.5 rounded-lg focus:outline-none" required>
+              <option value="" disabled selected>Select Year</option>
+              <option value="1">First Year</option>
+              <option value="2">Second Year</option>
+              <option value="3">Third Year</option>
+              <option value="4">Fourth Year</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="block mb-2 font-medium text-gray-700 required-field">Academic Year</label>
+            <select id="academicYear" class="w-full px-4 py-2.5 rounded-lg focus:outline-none" required>
+              <option value="" disabled selected>Select Academic Year</option>
+            </select>
+            <p class="info-text">Academic year changes in June (e.g., 2025-26 starts from June 2025)</p>
+          </div>
+
+          <div class="form-group">
+            <label class="block mb-2 font-medium text-gray-700 required-field">Roll Number</label>
+            <input type="text" id="rollNo" placeholder="Enter Roll Number"
+              class="w-full px-4 py-2.5 rounded-lg focus:outline-none" required>
+          </div>
+        </div>
+      </div>
+
+      <hr class="form-divider">
+
+      <!-- Personal Information Section -->
+      <div>
+        <h3 class="form-section-title">Personal Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="form-group">
+            <label class="block mb-2 font-medium text-gray-700 required-field">Contact Number</label>
+            <input type="tel" id="contactNumber" placeholder="Enter Contact Number"
+              class="w-full px-4 py-2.5 rounded-lg focus:outline-none" required>
+          </div>
+
+          <div class="form-group">
+            <label class="block mb-2 font-medium text-gray-700 required-field">Date of Birth</label>
+            <input type="date" id="dob" class="w-full px-4 py-2.5 rounded-lg focus:outline-none" required>
+          </div>
+
+          <div class="form-group">
+            <label class="block mb-2 font-medium text-gray-700 required-field">Gender</label>
+            <select id="gender" class="w-full px-4 py-2.5 rounded-lg focus:outline-none" required>
+              <option value="" disabled selected>Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+              <option value="prefer_not_to_say">Prefer not to say</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit"
+        class="w-full py-3 px-6 text-white font-semibold rounded-lg submit-btn mt-8">
+        Submit Information
+      </button>
+    </form>
+  </div>
+
+  <script src="js/collegeInfo.js"></script>
+</body>
+</html>

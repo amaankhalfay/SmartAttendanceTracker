@@ -1,0 +1,337 @@
+<!-- client/upload-method.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Select Upload Method | Smart Attendance Tracker</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .dashboard {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    .sidebar {
+      width: 250px;
+      background-color: var(--primary);
+      color: white;
+      padding: 20px;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .sidebar-header h3 {
+      margin-left: 10px;
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+    
+    .sidebar-menu {
+      list-style: none;
+    }
+    
+    .sidebar-menu li {
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    
+    .sidebar-menu li:hover {
+      background-color: var(--secondary);
+    }
+    
+    .sidebar-menu li a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    
+    .sidebar-menu li a span {
+      margin-left: 10px;
+    }
+    
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background: linear-gradient(to right, #e0f2fe, #bae6fd);
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      background-color: white;
+      color: var(--primary);
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: 500;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background-color: var(--primary);
+      color: white;
+      transform: translateX(-5px);
+    }
+
+    .back-button span {
+      margin-right: 0.5rem;
+    }
+
+    .upload-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .upload-title {
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .upload-title h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 1rem;
+    }
+
+    .upload-title p {
+      color: #4b5563;
+      font-size: 1.1rem;
+    }
+
+    .upload-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 1rem;
+    }
+
+    .upload-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .upload-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .upload-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .upload-card:hover::before {
+      transform: translateX(100%);
+    }
+
+    .upload-icon {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s ease;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    }
+
+    .upload-card:hover .upload-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .upload-card h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1e3a8a;
+      margin-bottom: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .upload-card:hover h2 {
+      color: var(--primary);
+    }
+
+    .upload-card p {
+      color: #4b5563;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .upload-card .arrow-icon {
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: all 0.3s ease;
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+
+    .upload-card:hover .arrow-icon {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .floating {
+      animation: float 3s ease-in-out infinite;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <span>📚</span>
+        <h3>Smart Attendance</h3>
+      </div>
+      <ul class="sidebar-menu">
+        <li>
+          <a href="dashboard.html">
+            <span>📊</span>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="timetable.html">
+            <span>📅</span>
+            <span>Timetable</span>
+          </a>
+        </li>
+        <li>
+          <a href="attendance.html">
+            <span>✅</span>
+            <span>Attendance</span>
+          </a>
+        </li>
+        <li>
+          <a href="extra-classes.html">
+            <span>➕</span>
+            <span>Extra Classes</span>
+          </a>
+        </li>
+        <li>
+          <a href="analytics.html">
+            <span>📈</span>
+            <span>Analytics</span>
+          </a>
+        </li>
+        <li>
+          <a href="export.html">
+            <span>☁️</span>
+            <span>Export</span>
+          </a>
+        </li>
+        <li>
+          <a href="profile.html">
+            <span>👤</span>
+            <span>My Profile</span>
+          </a>
+        </li>
+        <li>
+          <a href="settings.html">
+            <span>⚙️</span>
+            <span>Settings</span>
+          </a>
+        </li>
+        <li>
+          <button onclick="logout()" style="background:none;border:none;color:white;display:flex;align-items:center;padding:10px;cursor:pointer;">
+            <span>🚪</span>
+            <span style="margin-left:10px;">Logout</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="main-content">
+      <a href="timetable.html" class="back-button">
+        <span>←</span>
+        Back to Timetable
+      </a>
+      <div class="upload-container">
+        <div class="upload-title">
+          <h1>Choose Upload Method</h1>
+          <p>Select your preferred way to add your timetable</p>
+        </div>
+
+        <div class="upload-grid">
+          <!-- Manual Upload -->
+          <div onclick="location.href='upload-timetable.html';" class="upload-card">
+            <img src="https://img.icons8.com/ios/100/2563eb/edit-property.png" class="upload-icon floating" alt="Manual Upload Icon"/>
+            <h2>Manual Upload</h2>
+            <p>Add timetable manually by filling a simple form with your class details</p>
+            <span class="arrow-icon">→</span>
+          </div>
+
+          <!-- CSV Upload -->
+          <div onclick="location.href='upload-timetable-csv.html';" class="upload-card">
+            <img src="https://img.icons8.com/ios/100/2563eb/upload-to-cloud.png" class="upload-icon floating" alt="CSV Upload Icon"/>
+            <h2>Upload via CSV</h2>
+            <p>Upload your entire timetable at once using a CSV file format</p>
+            <span class="arrow-icon">→</span>
+          </div>
+
+          <!-- PDF Upload -->
+          <div onclick="location.href='upload-timetable-pdf.html';" class="upload-card">
+            <img src="https://img.icons8.com/ios/100/2563eb/pdf-2.png" class="upload-icon floating" alt="PDF Upload Icon"/>
+            <h2>Upload via PDF</h2>
+            <p>Upload your timetable directly from a PDF file</p>
+            <span class="arrow-icon">→</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

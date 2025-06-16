@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile | Smart Attendance Tracker</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #c7eafd, #d4f1f9);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl p-10">
+    <div class="flex justify-between items-center mb-6">
+      <button onclick="window.location.href='dashboard.html'" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Dashboard
+      </button>
+      <h2 class="text-3xl font-bold text-blue-600">My Profile</h2>
+      <div class="w-24"></div> <!-- Spacer for alignment -->
+    </div>
+
+    <!-- Profile Information Section -->
+    <div id="profileContainer" class="space-y-8">
+      <!-- Profile info will load dynamically -->
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mt-10 flex justify-center space-x-4">
+      <button id="editProfileButton" onclick="editProfile()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
+        Edit Profile
+      </button>
+      <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">
+        Logout
+      </button>
+    </div>
+
+    <!-- Edit Profile Form (Hidden by default) -->
+    <div id="editProfileForm" class="hidden mt-10">
+      <h3 class="text-2xl font-bold text-center text-blue-600 mb-6">Edit Your Profile</h3>
+      <form id="updateProfileForm" class="space-y-6 max-w-2xl mx-auto">
+        <!-- Form fields will be loaded dynamically here -->
+      </form>
+    </div>
+  </div>
+
+  <script src="js/profile.js"></script>
+</body>
+</html>

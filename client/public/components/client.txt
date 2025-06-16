@@ -1,0 +1,22 @@
+client/
+├── index.html
+├── login.html
+├── register.html
+├── dashboard.html
+├── timetable.html
+├── attendance.html
+├── extra-class.html
+├── analytics.html
+├── css/
+│   └── style.css
+├── js/
+│   ├── auth.js
+│   ├── dashboard.js
+│   ├── timetable.js
+│   ├── attendance.js
+│   ├── extra-class.js
+│   └── analytics.js
+
+
+
+http://localhost:5000/index.html

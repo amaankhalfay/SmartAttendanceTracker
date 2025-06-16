@@ -1,0 +1,258 @@
+<!-- client/upload-timetable.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual Timetable Upload | Smart Attendance</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --success: #4cc9f0;
+      --danger: #f72585;
+      --warning: #f8961e;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --gray: #6c757d;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fb;
+    }
+    
+    .dashboard {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    .sidebar {
+      width: 250px;
+      background-color: var(--primary);
+      color: white;
+      padding: 20px;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .sidebar-header h3 {
+      margin-left: 10px;
+      font-weight: 600;
+    }
+    
+    .sidebar-menu {
+      list-style: none;
+    }
+    
+    .sidebar-menu li {
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    
+    .sidebar-menu li:hover {
+      background-color: var(--secondary);
+    }
+    
+    .sidebar-menu li a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    
+    .sidebar-menu li a span {
+      margin-left: 10px;
+    }
+    
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background: linear-gradient(to right, #e0f2fe, #bae6fd);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .form-container {
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .form-input:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .card {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <span>📚</span>
+        <h3>Smart Attendance</h3>
+      </div>
+      <ul class="sidebar-menu">
+        <li>
+          <a href="dashboard.html">
+            <span>📊</span>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="timetable.html">
+            <span>📅</span>
+            <span>Timetable</span>
+          </a>
+        </li>
+        <li>
+          <a href="attendance.html">
+            <span>✅</span>
+            <span>Attendance</span>
+          </a>
+        </li>
+        <li>
+          <a href="extra-classes.html">
+            <span>➕</span>
+            <span>Extra Classes</span>
+          </a>
+        </li>
+        <li>
+          <a href="analytics.html">
+            <span>📈</span>
+            <span>Analytics</span>
+          </a>
+        </li>
+        <li>
+          <a href="export.html">
+            <span>☁️</span>
+            <span>Export</span>
+          </a>
+        </li>
+        <li>
+          <a href="profile.html">
+            <span>👤</span>
+            <span>My Profile</span>
+          </a>
+        </li>
+        <li>
+          <a href="settings.html">
+            <span>⚙️</span>
+            <span>Settings</span>
+          </a>
+        </li>
+        <li>
+          <button onclick="logout()" style="background:none;border:none;color:white;display:flex;align-items:center;padding:10px;cursor:pointer;">
+            <span>🚪</span>
+            <span style="margin-left:10px;">Logout</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="flex justify-between items-center mb-8 w-full max-w-800">
+        <button onclick="window.location.href='upload-method.html'" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2.5 px-6 rounded-lg transition duration-300 flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back
+        </button>
+        <h1 class="text-3xl font-bold text-blue-700">Add Class to Timetable</h1>
+        <div class="w-24"></div> <!-- Spacer for alignment -->
+      </div>
+      
+      <div class="form-container">
+        <form id="timetableForm" class="card rounded-2xl shadow-xl p-8 border border-gray-100">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Day Selection -->
+            <div class="space-y-2">
+              <label for="day" class="block text-sm font-medium text-gray-700">Day *</label>
+              <select id="day" required class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                <option value="">Select Day</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+              </select>
+            </div>
+
+            <!-- Start Time -->
+            <div class="space-y-2">
+              <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time *</label>
+              <input type="time" id="startTime" required 
+                     class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+            </div>
+
+            <!-- End Time -->
+            <div class="space-y-2">
+              <label for="endTime" class="block text-sm font-medium text-gray-700">End Time *</label>
+              <input type="time" id="endTime" required 
+                     class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+            </div>
+
+            <!-- Subject -->
+            <div class="space-y-2">
+              <label for="subject" class="block text-sm font-medium text-gray-700">Subject *</label>
+              <input type="text" id="subject" required 
+                     class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+            </div>
+
+            <!-- Location -->
+            <div class="space-y-2">
+              <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+              <input type="text" id="location" 
+                     class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+            </div>
+
+            <!-- Faculty -->
+            <div class="space-y-2">
+              <label for="faculty" class="block text-sm font-medium text-gray-700">Faculty</label>
+              <input type="text" id="faculty" 
+                     class="form-input w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+            </div>
+          </div>
+
+          <div class="mt-10 flex justify-center">
+            <button type="submit" 
+                    class="px-8 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+              <span class="font-semibold">Add Class</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/uploadTimetable.js"></script>
+  <script>
+    function logout() {
+      localStorage.removeItem('user');
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
